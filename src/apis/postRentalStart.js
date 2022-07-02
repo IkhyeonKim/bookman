@@ -11,5 +11,6 @@ export const api =
       },
       body: JSON.stringify({ userId }),
     });
+    console.log(response);
     return response.json();
   };
