@@ -88,7 +88,7 @@ const renderAuthors = (authors) => {
     const element = authors[i];
 
     if (i > 4) {
-      authorsElement.push(<span>외 {authors.length - i}명</span>);
+      authorsElement.push(<span key={element}>외 {authors.length - i}명</span>);
       break;
     } else {
       authorsElement.push(<span key={element}>{element}</span>);
