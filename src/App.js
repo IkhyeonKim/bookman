@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import MainPage from "./components/pages/mainPage";
 import "antd/dist/antd.css";
 import { useEventSource } from "./hooks/useEventSource";
@@ -11,7 +10,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const [message, setMessage] = useState("");
   const data = useEventSource("https://bookman.brique.kr:8080/v1/sse");
   return (
     <div>
