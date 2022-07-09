@@ -9,8 +9,10 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const SSE_URL = "https://bookman.brique.kr:8080/v1/sse";
+
 function App() {
-  const data = useEventSource("https://bookman.brique.kr:8080/v1/sse");
+  const data = useEventSource(SSE_URL);
   return (
     <div>
       <GlobalStyle />

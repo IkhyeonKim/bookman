@@ -4,7 +4,7 @@ export const useEventSource = (url) => {
   const [serverEvent, updateServerEvent] = useState(null);
 
   useEffect(() => {
-    const eventSource = new EventSource("https://bookman.brique.kr:8080/v1/sse");
+    const eventSource = new EventSource(url);
 
     eventSource.onopen = (event) => {
       console.log("server is opned", event);
