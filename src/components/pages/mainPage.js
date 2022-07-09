@@ -99,8 +99,8 @@ const renderAuthors = (authors) => {
 };
 
 const MainPage = ({ serverEvent }) => {
-  const [bookList, setBookList] = useState([]);
-  const refBookList = useRef([]);
+  const [bookList, setBookList] = useState(new Map());
+  const refBookList = useRef(new Map());
 
   console.log("Mainpage rendered");
 
@@ -118,8 +118,10 @@ const MainPage = ({ serverEvent }) => {
   }, []);
 
   const renderBookList = useCallback(() => {
-    return bookList.map((book) => {
-      return (
+    const elements = [];
+
+    for (const [, book] of bookList) {
+      const bookElement = (
         <li key={book.bookId}>
           <div className="book-item book-item-image">
             <img alt={`${book.name} 이미지`} src={book.image} />
@@ -127,8 +129,8 @@ const MainPage = ({ serverEvent }) => {
           <div className="book-item book-item-name">{book.name}</div>
           <div className="book-item book-item-author">
             {/* {book.authors.map((author) => (
-              <span key={author}>{author}</span>
-            ))} */}
+          <span key={author}>{author}</span>
+        ))} */}
             {renderAuthors(book.authors)}
           </div>
           <div className="book-item book-item-status">
@@ -161,13 +163,21 @@ const MainPage = ({ serverEvent }) => {
           <div className="book-item">{book.userId || ""}</div>
         </li>
       );
-    });
+      elements.push(bookElement);
+    }
+
+    return elements;
   }, [bookList]);
 
   const fetchBookList = useCallback(async ({ offset, limit }) => {
     const res = await getBookListWithStatus({ offset, limit });
     console.log("_fetchBookList", res);
-    setBookList(res);
+
+    const _bookList = new Map();
+    res.forEach((book) => {
+      _bookList.set(book.bookId, book);
+    });
+    setBookList(_bookList);
     return res;
   }, []);
 
@@ -186,11 +196,16 @@ const MainPage = ({ serverEvent }) => {
     const { type, data } = serverEvent;
 
     if (shouldBookListUpdate(type)) {
-      fetchBookList({ offset: 0, limit: 20 });
-      const bookInfo = refBookList.current.find((book) => book.bookId === data.bookId);
+      const bookInfo = refBookList.current.get(data.bookId);
       if (type === START_RENTAL) {
+        setBookList((prev) =>
+          new Map(prev).set(data.bookId, { ...bookInfo, start: data.start, status: "대여중" })
+        );
         message.success(`${bookInfo.name}의 대여가 시작되었습니다.`);
       } else if (type === END_RENTAL) {
+        setBookList((prev) =>
+          new Map(prev).set(data.bookId, { ...bookInfo, start: null, status: null })
+        );
         message.success(`${bookInfo.name}의 대여가 종료되었습니다.`);
       }
     }
