@@ -98,11 +98,11 @@ const renderAuthors = (authors) => {
   return authorsElement;
 };
 
-const MainPage = ({ serverEvent }) => {
+const MainPage = ({ serverEvent, socket }) => {
   const [bookList, setBookList] = useState(new Map());
   const refBookList = useRef(new Map());
 
-  console.log("Mainpage rendered");
+  console.log("Mainpage rendered", socket);
 
   const renderBookListHeader = useCallback(() => {
     return (

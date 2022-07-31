@@ -50,7 +50,7 @@ export const useEventSource = (url) => {
     });
 
     return () => eventSource.close();
-  }, []);
+  }, [url]);
 
   return serverEvent;
 };
